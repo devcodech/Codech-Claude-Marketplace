@@ -66,7 +66,7 @@ The single design decision that shows judgement. `eyebrow`, `quote` (short, punc
 Several viewers can sit on one page; `case.js` scopes each to its own `.deck`.
 
 ## integrations (optional; recommended whenever the project connects to named tools)
-Grouped brand-logo cards: which tools the project plugs into and what each one does there. Rendered after the pipeline.
+Grouped brand-logo cards: which tools the project plugs into and what each one does there. Rendered after the pipeline, or right after the stats (before the problem) with `"position": "before_problem"`.
 `eyebrow` (default "Integrations"), `h2`, `sub`, `foot` (optional line under the grid), `groups`: 2–4 of `{name, items}`, each item `{logo, name, role}`:
 - `logo`: a key from the skill's logo library `assets/shared/logos/` (file stem: `whatsapp`, `respond-io`, `n8n`, `openai`, `groq`, `claude`, `gemini`, `sql-account`, `autocount`, `xero`, `postgresql`, `docker`, `fastapi`, `google-sheets`, `google-drive`, `gmail`, `microsoft-teams`, `slack`, `hubspot`, `shopify`, `stripe`, … see `logos/SOURCES.md`), or a path relative to the case folder (`assets/acme-erp.svg`). Only the logos a case uses are copied to `work/_shared/logos/`. Unknown key → a monogram tile (set `color`).
 - `name`: product name as the vendor writes it; `role`: what it does *in this project*, ≤ 10 words, facts from the brief (e.g. "Runs the agents and syncs: 54 workflows, 1,157 nodes").

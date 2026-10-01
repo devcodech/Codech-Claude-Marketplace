@@ -205,6 +205,30 @@ def page(c):
 ''')
     W("</header>\n")
 
+    def integrations_section():  # placed after the pipeline, or before the problem with "position": "before_problem"
+        ig = c["integrations"]; n = next(num); cols = []
+        for k, g in enumerate(ig.get("groups", [])):
+            items = []
+            for it in g.get("items", []):
+                src = logo_src(slug, it.get("logo", ""))
+                mark = (f'<img src="{a(src)}" alt="" loading="lazy">' if src else
+                        f'<i style="background:{a(it.get("color", "#0b0d12"))}">{a(it.get("name", "?"))[:1]}</i>')
+                items.append(f'      <div class="ig-it glow"><span class="ig-logo">{mark}</span><div class="ig-tx"><b>{t(it["name"])}</b><span>{t(it.get("role", ""))}</span></div></div>')
+            cols.append(f'    <div class="ig-g rv" style="--i:{k}"><p class="ig-h"><span>{t(g["name"])}</span><em>{len(items):02d}</em></p>\n' + "\n".join(items) + '\n    </div>')
+        foot = f'\n  <p class="ig-foot rv">{t(ig["foot"])}</p>' if ig.get("foot") else ""
+        W(f"""
+<section class="sec wrap" id="integrations">
+  <div class="sec-head rv"><p class="eyebrow"><span class="n">{n}</span>{t(ig.get('eyebrow','Integrations'))}</p><h2 class="h-lg">{t(ig['h2'])}</h2><p class="sub">{t(ig.get('sub',''))}</p></div>
+  <div class="intg" style="--n:{len(cols)}">
+{chr(10).join(cols)}
+  </div>{foot}
+</section>
+""")
+
+    ig_early = bool(c.get("integrations")) and c["integrations"].get("position") == "before_problem"
+    if ig_early:
+        integrations_section()
+
     if c.get("problem"):
         p = c["problem"]; n = next(num)
         items = "\n".join(f'    <div class="prob rv glow"><span class="no">{k+1:02d}</span><span class="ic">{ico(i["icon"])}</span><h3>{t(i["title"])}</h3><p>{t(i["body"])}</p></div>' for k, i in enumerate(p["items"]))
@@ -289,25 +313,8 @@ def page(c):
 </section>
 """)
 
-    if c.get("integrations"):
-        ig = c["integrations"]; n = next(num); cols = []
-        for k, g in enumerate(ig.get("groups", [])):
-            items = []
-            for it in g.get("items", []):
-                src = logo_src(slug, it.get("logo", ""))
-                mark = (f'<img src="{a(src)}" alt="" loading="lazy">' if src else
-                        f'<i style="background:{a(it.get("color", "#0b0d12"))}">{a(it.get("name", "?"))[:1]}</i>')
-                items.append(f'      <div class="ig-it glow"><span class="ig-logo">{mark}</span><div class="ig-tx"><b>{t(it["name"])}</b><span>{t(it.get("role", ""))}</span></div></div>')
-            cols.append(f'    <div class="ig-g rv" style="--i:{k}"><p class="ig-h"><span>{t(g["name"])}</span><em>{len(items):02d}</em></p>\n' + "\n".join(items) + '\n    </div>')
-        foot = f'\n  <p class="ig-foot rv">{t(ig["foot"])}</p>' if ig.get("foot") else ""
-        W(f"""
-<section class="sec wrap" id="integrations">
-  <div class="sec-head rv"><p class="eyebrow"><span class="n">{n}</span>{t(ig.get('eyebrow','Integrations'))}</p><h2 class="h-lg">{t(ig['h2'])}</h2><p class="sub">{t(ig.get('sub',''))}</p></div>
-  <div class="intg" style="--n:{len(cols)}">
-{chr(10).join(cols)}
-  </div>{foot}
-</section>
-""")
+    if c.get("integrations") and not ig_early:
+        integrations_section()
 
     if c.get("delivery"):
         d = c["delivery"]; n = next(num)
