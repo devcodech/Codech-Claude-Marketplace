@@ -1,0 +1,12 @@
+# Admin SSH allowlist -- goes in /etc/ufw/before.rules, inside the *filter block,
+# under the ufw-before-input chain.
+#
+# WHY HERE AND NOT `ufw allow`: restarting fail2ban re-inserts its REJECT rules at
+# position 1, silently pushing numbered ALLOW rules below them. before.rules is
+# always evaluated first, so this survives.
+#
+# Verify: ban a TEST ip (203.0.113.99), then confirm a NEW ssh session still connects.
+
+-A ufw-before-input -s __ADMIN_IP__ -p tcp --dport 22 -j ACCEPT
+# -A ufw-before-input -s __ADMIN_IP_2__ -p tcp --dport 22 -j ACCEPT
+# -A ufw-before-input -s __ADMIN_IP__ -p tcp --dport __ALT_SSH_PORT__ -j ACCEPT

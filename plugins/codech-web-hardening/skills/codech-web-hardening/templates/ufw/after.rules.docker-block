@@ -1,0 +1,43 @@
+# Make UFW actually filter Docker-published ports.
+# Docker publishes via its own iptables chains in FORWARD/DOCKER-USER, which bypass
+# UFW's INPUT chain -- so `ufw deny 80` on a Docker host does NOTHING.
+#
+# ORDER IS CRITICAL: load your `ufw route allow` rules (e.g. CDN ranges) FIRST.
+# This block DROPs every new inbound connection to containers that no route rule
+# allows, the moment it is loaded. Reversed, you black-hole all traffic.
+#
+# Install:
+#   cp /etc/ufw/after.rules /etc/ufw/after.rules.bak-$(date +%F-%H%M%S)
+#   cat this_file >> /etc/ufw/after.rules
+#   iptables-restore --test < /etc/ufw/after.rules   # MUST pass before reloading
+#   ufw reload
+# Verify from OUTSIDE: direct-to-origin-IP must time out; every hostname still 200
+# through the CDN. Script an automatic revert if the public path breaks.
+
+# BEGIN UFW AND DOCKER
+*filter
+:ufw-user-forward - [0:0]
+:ufw-docker-logging-deny - [0:0]
+:DOCKER-USER - [0:0]
+-A DOCKER-USER -j ufw-user-forward
+
+-A DOCKER-USER -j RETURN -s 10.0.0.0/8
+-A DOCKER-USER -j RETURN -s 172.16.0.0/12
+-A DOCKER-USER -j RETURN -s 192.168.0.0/16
+
+-A DOCKER-USER -p udp -m udp --sport 53 --dport 1024:65535 -j RETURN
+
+-A DOCKER-USER -j ufw-docker-logging-deny -p tcp -m tcp --tcp-flags FIN,SYN,RST,ACK SYN -d 192.168.0.0/16
+-A DOCKER-USER -j ufw-docker-logging-deny -p tcp -m tcp --tcp-flags FIN,SYN,RST,ACK SYN -d 10.0.0.0/8
+-A DOCKER-USER -j ufw-docker-logging-deny -p tcp -m tcp --tcp-flags FIN,SYN,RST,ACK SYN -d 172.16.0.0/12
+-A DOCKER-USER -j ufw-docker-logging-deny -p udp -m udp --dport 0:32767 -d 192.168.0.0/16
+-A DOCKER-USER -j ufw-docker-logging-deny -p udp -m udp --dport 0:32767 -d 10.0.0.0/8
+-A DOCKER-USER -j ufw-docker-logging-deny -p udp -m udp --dport 0:32767 -d 172.16.0.0/12
+
+-A DOCKER-USER -j RETURN
+
+-A ufw-docker-logging-deny -m limit --limit 3/min --limit-burst 10 -j LOG --log-prefix "[UFW DOCKER BLOCK] "
+-A ufw-docker-logging-deny -j DROP
+
+COMMIT
+# END UFW AND DOCKER

@@ -6,6 +6,35 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ---
 
+## codech-web-hardening
+
+### [1.0.0] — 2026-10-07
+
+First release. Generalised from four real engagements: an 11-hour OOM outage and event-readiness programme on a live broker site, a WordPress production security audit, a cPanel directory-site performance recovery, and an SSH lockout during firewall hardening.
+
+**Contents:**
+- `SKILL.md` — break-glass-first workflow (Phase 0 safety → measure → triage order → verify through the public path)
+- `references/hardening-playbook.md` — the ordered steps, each with backup → change → verify → rollback
+- `references/gotchas.md` — ~25 entries in Symptom / Cause / Fix form, all paid for in production time
+- `references/caching-and-capacity.md` — php-fpm sizing arithmetic, DB bloat, origin page cache, CDN cache rules
+- `references/events-and-shared-ips.md` — why per-IP defences must be disabled for campaign spikes (venue NAT + carrier CGNAT), and how to load-test prod without causing an outage
+- `references/wordpress-specific.md` — inherited-site audit, enumeration, multilingual traps, SEO-plugin sitemap caching
+- `references/audit-report.md` — audit report + staged remediation runbook templates
+- `templates/` — php-fpm pool tuning, fail2ban filters/jails/actions, proxy blocklist script, UFW admin allowlist and Docker block (all `__PLACEHOLDER__`, no real IPs or tokens)
+- `scripts/triage.sh` — read-only diagnostic sweep; `scripts/watchdog.sh` — self-healing liveness check with evidence capture
+
+**Notable lessons encoded:**
+- `pm.max_children × peak worker RSS` must fit the memory cap — the single most common cause of "the server is too small"
+- Single-file bind mounts: `sed -i` replaces the inode and the container keeps the old file
+- A manual `fail2ban banip` bypasses `ignoreip` and will cut your own SSH session
+- `ufw deny` does nothing to Docker-published ports; load CDN allow rules *before* the block
+- Cloudflare expressions using `not http.cookie contains …` never match a request with no Cookie header
+- Verify front-end optimisation logged-out — page caches skip logged-in sessions and make a working cache look broken
+
+**Integration:**
+- Composes with `superpowers:systematic-debugging` (unknown cause) and `superpowers:verification-before-completion` (before claiming a fix)
+- Hands off to `codech-project-superpower` when the engagement needs a full document set
+
 ## codech-mockup-design
 
 ### [1.4.2] — 2026-06-28

@@ -1,0 +1,31 @@
+# Jails reading the reverse proxy's JSON access log.
+#
+# ignoreip MUST contain, or you will ban your own infrastructure / the CDN:
+#   - loopback + RFC1918
+#   - EVERY CDN edge range (https://www.cloudflare.com/ips/) -- otherwise the first
+#     automatic ban blackholes an entire Cloudflare PoP for all your visitors
+#   - admin / office IPs
+# NOTE: ignoreip governs AUTOMATIC detection only. A manual `banip` ignores it and
+# will cut your SSH session. Test with 203.0.113.99 (RFC 5737), never your own IP.
+
+[proxy-flood]
+enabled  = true
+backend  = auto
+logpath  = __ACCESS_LOG__
+filter   = proxy-flood
+findtime = 60
+maxretry = __FLOOD_MAXRETRY__
+bantime  = 1h
+action   = proxy-blocklist
+ignoreip = 127.0.0.1/8 ::1 10.0.0.0/8 172.16.0.0/12 192.168.0.0/16 __ADMIN_IPS__ __CDN_RANGES__
+
+[proxy-scanner]
+enabled  = true
+backend  = auto
+logpath  = __ACCESS_LOG__
+filter   = proxy-scanner
+findtime = 5m
+maxretry = __SCANNER_MAXRETRY__
+bantime  = 24h
+action   = proxy-blocklist
+ignoreip = 127.0.0.1/8 ::1 10.0.0.0/8 172.16.0.0/12 192.168.0.0/16 __ADMIN_IPS__ __CDN_RANGES__

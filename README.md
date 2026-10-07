@@ -15,6 +15,8 @@ A Claude Code [marketplace](https://docs.claude.com/en/docs/claude-code/plugin-m
 | [`codech-client-proposal`](./plugins/codech-client-proposal) | `1.0.0` | Packages a Codech engagement into a deployed, client-shareable HTML proposal. Applies a per-client design system to the canonical proposal anatomy, captures prototype screenshots via Playwright, deploys to Cloudflare Pages with a `*.pages.dev` URL |
 | [`codech-web-builder`](./plugins/codech-web-builder) | `0.1.0` | Turn reference website(s) + a brand logo into a deployed site: vision-extracted palette, taste-skill design system + HTML prototype, then convert to WordPress or static and deploy |
 | [`fintech-compliance-copy`](./plugins/fintech-compliance-copy) | `1.0.0` | Design, build, and keep regulator-safe a crypto / digital-asset / payment / fintech marketing website. Compliance baked in — disclaimers, unlaunched-service tagging, lawyer-approved wording |
+| [`codech-cinematic-web`](./plugins/codech-cinematic-web) | `1.0.0` | Cinematic marketing-page effects: a Three.js hero object lit by one analytic screen-space atmosphere, plus a sticky scroll deck over full-bleed video — with the measurement scripts that catch shell-banded glow, skipped panels and silent iOS autoplay failure |
+| [`codech-web-hardening`](./plugins/codech-web-hardening) | `1.0.0` | Harden and stabilise a live web server without taking it down. Break-glass-first safety, capacity triage (php-fpm vs RAM), proxy-log fail2ban, origin lockdown, origin + edge caching, self-healing watchdog, event/campaign spike readiness, safe load testing, audit + remediation runbook templates |
 
 More plugins will be added over time.
 
@@ -117,6 +119,14 @@ Requirements → FSD/SRS         design-system.md +             design-system + 
 Or, for a full website deliverable rather than a proposal, `codech-web-builder` replaces the final step by turning references + logo into a deployed WordPress or static site.
 
 ---
+
+### `codech-web-hardening` triggers on:
+
+- "the site is down" / "502" / "520" / "timing out" / "it dies under load"
+- "secure the server" / "we're being scanned" / "stop the attack"
+- "run a security audit" / "write a remediation runbook"
+- "prepare for our launch event" / "we expect a traffic spike"
+- **Before any load test on a production server**
 
 ## Updates
 

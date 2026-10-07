@@ -1,0 +1,6 @@
+# Override for the stock cloudflare-token action: force IPv4.
+# A token restricted to the server's IPv4 address fails when the host prefers IPv6
+# for outbound, with: "Cannot use the access token from location: 2605:..."
+# Alternative: add the server's IPv6 /64 to the token's IP filter.
+[Definition]
+_cf_api_prms = -4 -H "Authorization: Bearer <cftoken>" -H "Content-Type: application/json"

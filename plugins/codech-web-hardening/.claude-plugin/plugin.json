@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-plugin.json",
+  "name": "codech-web-hardening",
+  "version": "1.0.0",
+  "description": "Codech Web Hardening — secure and stabilise a live web server (WordPress/PHP behind Caddy, nginx, Apache or cPanel, usually fronted by Cloudflare) without taking it down. Break-glass-first safety, capacity triage, proxy-log fail2ban, origin lockdown, caching, self-healing watchdog, and the shared-IP rules for campaign/event spikes.",
+  "author": {
+    "name": "Codech",
+    "email": "team@codech.dev",
+    "url": "https://github.com/codech-dev"
+  },
+  "license": "MIT",
+  "homepage": "https://github.com/codech-dev/Codech-Claude-Marketplace",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/codech-dev/Codech-Claude-Marketplace.git",
+    "directory": "plugins/codech-web-hardening"
+  },
+  "keywords": [
+    "security",
+    "hardening",
+    "fail2ban",
+    "cloudflare",
+    "caddy",
+    "nginx",
+    "wordpress",
+    "php-fpm",
+    "oom",
+    "ddos",
+    "rate-limiting",
+    "page-cache",
+    "watchdog",
+    "incident-response",
+    "load-testing",
+    "event-readiness",
+    "ufw",
+    "docker",
+    "codech"
+  ]
+}
